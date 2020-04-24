@@ -1,0 +1,331 @@
+# 怎么用 Python 实现微信定时发送 #
+
+## 需求背景 ##
+
+>>
+「有没有那么一款可以定时群发的软件？」
+>>
+「自己动手，丰衣足食」
+>>
+「此话怎讲？」
+>>
+「人生苦短，我用 python 啊！」
+>>
+。。。。。
+
+
+
+当然这个方案可以适用于在微信上：每天定时给特定的人发送「晚安」，过年过节把祝福群体发送，以及回复许多重复而又有固定问题的答案 的朋友。
+
+## 什么是 Python？##
+
+**Python** 是一种计算机程序设计语言。你可能已经听说过很多种流行的编程语言，比如非常难学的 C 语言，非常流行的 Java 语言，适合初学者的 Basic 语言，适合网页编程的 JavaScript 语言等等。
+
+### 选 Python 有什么好处？###
+
+
+Python 是一种相当高级的语言, 极大的提高了 ** 游标卡尺 ** 的销量，是一种让游标卡尺脱销的语言（雾）。完成同一个任务，C 语言要写 1000 行代码，Java 只需要写 100 行，而 Python 可能只要 20 行。对于初学者和完成普通任务，Python 语言是非常 ** 简单易用 ** 的。连 Google、NASA 都在大规模使用 Python，你就不用担心学了会没用！
+
+
+### 用 Python 可以做什么？###
+
+可以做日常任务，比如自动备份你的 MP3；可以做网站，很多著名的网站包括 YouTube 就是 Python 写的；可以做网络游戏的后台，很多在线游戏的后台都是 Python 开发的。总之就是能干很多很多事啦。
+
+Python 当然也有不能干的事情，比如写操作系统，这个只能用 C 语言写；写手机应用，只能用 Swift/Objective-C（针对 iPhone）和 Java（针对 Android）；写 3D 游戏，最好用 C 或 C++。
+
+### 我对编程一窍不通怎么办？###
+
+即便你是 ** 小白用户 **，只要你满足：
+
+会使用电脑，但从来没写过程序；
+还记得初中数学学的方程式和一点点代数知识；
+能抽出半个小时阅读实践。
+
+就能轻松完成，你还在等什么！
+
+## 准备阶段 ##
+
+我主要使用的系统环境是Windows Python3.7，但它同样适用于Mac和各种Linux/Unix系统上，本文内容主要以Windows环境展开
+
+###Python的安装 ###
+
+目前，Python有两个版本，一个是2.x版，一个是3.x版，这两个版本是不兼容的。由于3.x版越来越普及，我们的教程将以最新的Python 3.7版本为基础。请确保你的电脑上安装的Python版本是最新的3.7.x，这样，你才能无痛学习这个教程。
+
+根据你的Windows版本（64位还是32位）从Python的官方网站(https://www.python.org/)下载Python 3.7对应的64位安装程序或32位安装程序
+
+下载完成后运行下载的EXE安装包，**特别要注意勾上Add Python 3.7 to PATH**
+
+然后点“Install Now”即可完成安装。
+
+
+###运行Python###
+
+安装完成后，打开**命令提示符窗口**，敲入*python*验证是否安装成功。
+ 
+>>
+可使用组合键Win+R打开**运行**窗口，然后输入*cmd*回车打开命令提示符窗口。
+
+
+┌────────────────────────────────────────────────────────┐
+│Command Prompt - python                           - □ x │
+├────────────────────────────────────────────────────────┤
+│Microsoft Windows [Version 10.0.0]                      │
+│(c) 2015 Microsoft Corporation. All rights reserved.    │
+│                                                        │
+│C:\> python                                             │
+│Python 3.6.3 |Anaconda, Inc.| ... on win32              │
+│Type "help", ... for more information.                  │
+│>>>                                                     │
+│                                                        │
+│                                                        │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+
+
+看到以上画面说明Python安装成功。
+
+`>>>`就表示我们已经在Python交互式环境中了，可以输入任何Python代码，回车后会立刻得到执行结果。
+
+现在，输入exit()并回车，就可以退出Python交互式环境（直接关掉命令行窗口也可以）。
+
+
+如果遇到提示
+
+>>
+‘python’ 不是内部或外部命令，也不是可运行的程序或批处理文件。
+
+
+┌────────────────────────────────────────────────────────┐
+│Command Prompt - python                           - □ x │
+├────────────────────────────────────────────────────────┤
+│Microsoft Windows [Version 10.0.0]                      │
+│(c) 2015 Microsoft Corporation. All rights reserved.    │
+│                                                        │
+│C:\> python                                             │
+│'python'is not recognized as an internal or external    │
+│command,                                                │
+│operable program or batch file.                         │
+│                                                        │
+│C:\>                                                    │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+
+说明环境变量设定出现问题，就要手动把python.exe所在的路径添加到Path中，当然也可以重新运行Python安装程序，重复上述步骤，**务必记得勾上Add Python 3.7 to PATH。**
+
+
+###安装wxpy###
+
+在Python中，安装使用第三方模块通常能够极大的提升工作的效率和简化复杂程度，本文选择wxpy库，它可以通过授权登陆网页版微信，实现各种微信个人号的自动化操作。
+
+wxpy的API文档：http://wxpy.readthedocs.io/zh/latest/index.html
+
+wxpy的项目主页：https://github.com/youfou/wxpy
+
+安装过程是通过包管理工具pip完成的。请确保在安装时勾选了**pip和Add python.exe to Path**。
+
+在命令提示符窗口下尝试运行pip，如果Windows提示未找到命令，可以重新运行安装程序添加pip。
+
+从 PYPI 官方源下载安装 (在国内可能比较慢或不稳定):
+
+>>
+pip install wxpy
+
+┌────────────────────────────────────────────────────────┐
+│Command Prompt - python                           - □ x │
+├────────────────────────────────────────────────────────┤
+│Microsoft Windows [Version 10.0.0]                      │
+│(c) 2015 Microsoft Corporation. All rights reserved.    │
+│                                                        │
+│C:\>pip install wxpy                                    │
+│                                                        │
+│                                                        │
+│                                                        │
+│                                                        │
+│                                                        │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+
+
+从豆瓣 PYPI 镜像源下载安装 (推荐国内用户选用):
+>>
+pip install wxpy -i "https://pypi.doubanio.com/simple/"
+
+
+
+##实现代码##
+
+本部分参照API文档介绍一些基本使用方法。
+
+###登录微信###
+程序中写上这两行并运行，会通过图片扫描二维码并登录微信。
+
+```
+# 导入模块
+from wxpy import *
+# 初始化机器人，扫码登陆
+bot = Bot()
+```
+
+如果你认为每次都需要扫描二维码很麻烦，可以启用缓存，来保存自己的登录状态：
+
+`bot = Bot(console_qr=True, cache_path=True)`
+
+
+###发送消息###
+
+首先我们尝试给自己和文件传输助手发消息
+
+```
+# 给机器人自己发送消息
+bot.self.send('Hello World!')
+# 给文件传输助手发送消息
+bot.file_helper.send('Hello World!')
+```
+
+接着我们给好友发送消息，第一步先找到要发送信息的对象
+
+```
+# 查找昵称为'Streetcar'的好友
+my_friend = bot.friends().search(u'Streetcar')[0]
+```
+
+其次我们需要确定发送消息的类型与内容
+
+```
+# 发送文本
+my_friend.send('Hello, WeChat!')
+# 发送图片
+my_friend.send_image('my_picture.png')
+# 发送视频
+my_friend.send_video('my_video.mov')
+# 发送文件
+my_friend.send_file('my_file.zip')
+# 以动态的方式发送图片
+my_friend.send('@img@my_picture.png')
+```
+
+###群发消息###
+
+可以尝试给自己的好友发送早安（**谨慎使用**）
+
+```
+my_friends = bot.friends(update=False)
+my_friends.pop(0)   # 除去列表中第一个元素（自己）
+for i in range(120):
+    friend = my_friends[i]
+    friend.send('早上好')
+```
+
+###运营支持###
+
+查看自己的好友数、加入群聊数、关注微信公众号数等
+
+```
+# 获取所有好友[返回列表包含Chats物件(你的所有好友，包括自己)]
+t0 = bot.friends(update=False)
+# 查看自己好友数(除自己)
+print("我的好友数："+str(len(t0)-1))
+
+# 获取所有微信群[返回列表包含Groups物件]
+t1 = bot.groups(update=False)
+# 查看微信群数(活跃的)
+print("我的微信群聊数："+str(len(t1)))
+
+# 获取所有关注的微信公众号[返回列表包含Chats物件]
+t2 = bot.mps(update=False)
+# 查看关注的微信公众号数
+print("我关注的微信公众号数："+str(len(t2)))
+```
+
+当然也可以分析指定群内成员结构
+
+```
+# 找到群
+group = ensure_one(bot.groups().search('要找的群名称'))
+# 更新群成员详细信息
+group.update_group(True)
+找出所有女群员~
+female_members = group.members.search(sex=FEMALE)
+只想看本地的？那就加个 city 参数吧。
+local_female_members = group.members.search(sex=FEMALE, city='重庆')
+想一次性把她们都加为好友？
+local_female_members.add_all(interval=3, verify_content='认识一下吧？')
+```
+
+
+注意设置 `add_all() `的 `interval `参数，过高的请求频率可能导致加好友功能被短暂封锁。
+
+除了群成员外，`bot.friends()` 也有 `search() `方法，可用于在好友中进行搜索。
+
+
+###结合图灵API做一个微信机器人###
+
+首先你需要注册一个图灵机器人
+
+```
+bot = Bot()  
+tuling = Tuling(api_key='图灵api')
+print('图灵机器人已上线')
+my_friednd = bot.friends().search('Streetcar')[0]
+# 如果想对所有好友实现机器人回覆把引数my_friend改成chats = [Friend]
+# 使用图灵机器人自动与指定好友聊天
+@bot.register(my_friend)
+def reply_my_friend(msg):
+    tuling.do_reply(msg)
+# 进入交互式的 Python 命令行界面，并堵塞当前线程
+embed()
+```
+
+
+###微信群发送消息代码实例。###
+
+本例的需求为每天都需要你发送指定内容到微信群内
+
+```
+from __future__ import unicode_literals
+from threading import Timer
+from wxpy import *
+import random
+bot = Bot(cache_path="Wechat.pkl")
+# Bot 在初始化时便会执行登陆操作，需要手机扫描登陆。
+# cache_path  设置当前会话的缓存路径，并开启缓存功能，可在短时间内避免重复扫码
+
+
+def search():
+         
+         groups = bot.groups()
+         for group in groups:
+                  print(group)
+                  # 获取微信获取所有群聊对象并显示，一些不活跃的群可能无法被获取到，可通过「添加通讯录」强制活跃
+ 
+def send_news():
+    try:
+        Text=u"这里是Python测试"
+        # 引号内为群发的消息内容
+        my_groups = bot.groups().search("夸夸群")[0]
+        my_groups.send(Text)
+        my_groups.send_file("readme.txt")
+        # 引号内为微信群的名称。
+        group.send(Text)
+        group.send_file("readme.txt")
+        # 为了防止时间太固定，于是决定对其加上随机数，单位为秒，1天为每86400秒
+        ran_int = random.randint(0,10)
+        t = Timer(86400+ran_int,send_news)
+
+        t.start()    
+        
+    except:
+ 
+        # 通过文件传输助手回馈。
+        bot.file_helper.send(u"今天消息发送失败了")
+        
+if __name__ == "__main__":
+    search()
+    send_news()
+```
+
+##小结##
+
+wxpy还能实现许多功能，感兴趣的朋友可以详细查看官方API文档（https://wxpy.readthedocs.io/zh/latest/index.html）。
+
+从上述实例不难看出，使用Python配合第三方的库可以实现许多功能，将我们从重复单调的工作中解脱出来，从而更好地创造更多的价值。
